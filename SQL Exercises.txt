@@ -1,0 +1,179 @@
+---------------------------------------------------------------
+Exercise 1
+---------------------------------------------------------------
+
+5. Display all the data from the S table.
+ANS:
+mysql> select * from supplier;
+
+6. Display only the S# and SNAME fields from the S table
+ANS:
+mysql> select `S#`,Sname from supplier;
+
+7. Display the PNAME and COLOR from the P table for the CITY=”London”
+ANS:
+mysql>  select PNAME,COLOR from parts
+    ->  where city = 'London';
+
+8. Display all the Suppliers from London.
+ANS:
+mysql> select * from supplier
+    -> where city = 'London';
+
+9. Display all the Suppliers from Paris or Athens
+ANS:
+mysql> select * from supplier
+    -> where city ='paris' or city = 'athehs';
+ 
+10. Display all the Projects in Athens
+ANS:
+mysql> select * from projects
+    -> where city = 'athehs';
+
+---------------------------------------------------------------
+Exercise 2
+---------------------------------------------------------------
+
+1. Display the Supplier table in the descending order of CITY. 
+ANS:
+mysql> select * from Supplier Order by City DESC;
+
+3. Display all the Suppliers with a status between 10 and 20. 
+ANS:
+mysql> select * from Supplier where Status between 10 and 20;
+
+4. Display all the Parts and their Weight, which are not in the range of 10 and 15.
+ANS:
+mysql> select Pname, Weight from Parts where Weight not between 10 and 15;
+
+5. Display all the Part names starting with the letter ‘S’. 
+ANS:
+mysql> select * from Parts where Pname like 'S%';
+
+6. Display all the Suppliers, belonging to cities starting with the letter ‘L’. 
+ANS:
+mysql> select * from supplier where city like 'L%';
+
+7. Display all the Projects, with the third letter in JNAME as ‘n’.
+ANS:
+soln 1-mysql> select * from Projects where SUBSTRING(JNAME, 3, 1) = 'n';
+soln 2-mysql> select * FROM projects where jname LIKE '___n%';
+
+---------------------------------------------------------------
+Exercise 3
+---------------------------------------------------------------
+
+2. Display all the Supplier names in upper case.
+ANS:
+mysql> SELECT upper(sname) FROM supplier;
+
+3. Display all the Supplier names in lower case.
+ANS:
+mysql> SELECT lower(sname) FROM supplier;
+
+4. Display all the Supplier names padded to 25 characters, with spaces on the left.
+ANS:
+mysql> SELECT LPAD(Sname, 25, ' ')  FROM Supplier;
+
+5. Display all the Supplier names (with ‘la’ replaced by ‘ro’). 
+ HINT: REPLACE. 
+ANS:
+mysql> select replace(sname, 'la','ro') from supplier;
+
+6. Implement the above command such that ‘l’ is replaced with ‘r’ and ‘a’ is replaced
+with ‘o’. 
+ANS:
+mysql> SELECT REPLACE(REPLACE(Sname, 'l', 'r'), 'e', 'o') from supplier;
+
+7. Display the Supplier names and the lengths of the names. 
+ANS:
+mysql> SELECT Sname, LENGTH(Sname) FROM Supplier;
+
+9. Display the Supplier name and the status (as Ten, Twenty, Thirty, etc.).
+ANS:
+mysql>  select sname,
+    -> CASE
+    ->  WHEN Status = 10 THEN 'Ten'
+    ->  WHEN Status = 20 THEN 'Twenty'
+    ->  WHEN Status = 30 THEN 'Thirty'
+    -> ELSE 'Unknown'
+    ->  END AS "Status"
+    -> from supplier;
+
+10. Display the current day (e.g. Thursday).
+ANS:
+SELECT DAYNAME(CURRENT_DATE());
+
+---------------------------------------------------------------
+Exercise 4 
+---------------------------------------------------------------
+
+1. Display the minimum Status in the Supplier table. 
+ANS:
+mysql> select min(status) from supplier;
+
+2. Display the maximum Weight in the Parts table.
+ANS:
+mysql> select max(weight) from parts;
+
+3. Display the average Weight of the Parts. 
+ANS:
+mysql> select avg(weight) from parts;
+
+4. Display the total Quantity sold for part ‘P1’.
+ANS:
+mysql> SELECT SUM(Qty)
+    -> from supplier_parts_project
+    -> WHERE `P#` = 'P1';
+
+5. Display the total Quantity sold for each part.
+ANS:
+mysql>  SELECT SUM(Qty)
+    ->  from supplier_parts_project
+    -> GROUP BY `P#`; 
+
+6. Display the avgerage Quantity sold for each part.
+ANS:
+mysql> SELECT avg(Qty)
+    -> from supplier_parts_project
+    -> GROUP BY `P#`;
+
+7. Display the maximum Quantity sold for each part, provided the maximum Quantity 
+is greater than 800.
+ANS:
+mysql> SELECT  MAX(Qty)
+    -> from supplier_parts_project
+    -> where Qty > 800
+    -> GROUP BY `P#`;
+
+8. Display the Status and the count of Suppliers with that Status.
+ANS:
+mysql> SELECT Status, COUNT(*)
+    -> FROM Supplier
+    -> GROUP BY Status;
+
+9. Display the count of Projects going on in different cities. 
+ANS:
+mysql> SELECT COUNT(*)
+    -> FROM projects
+    -> GROUP BY city;
+
+10. What is the difference between COUNT(Status) and COUNT(*) ?
+ANS:
+
+1. `COUNT(Status)`: This counts the number of rows where the `Status` column is not NULL. It counts only the rows where the `Status` column has a non-null value.
+
+2. `COUNT(*)`: This counts the total number of rows in the table, regardless of whether any specific column (in this case, `Status`) is NULL or not. It counts all the rows, regardless of whether they contain NULL values or not.
+
+Consider a table named `Supplier`:
+
+| SupplierID | SupplierName | Status |
+|------------|--------------|--------|
+| 1          | Supplier A   | 10     |
+| 2          | Supplier B   | NULL   |
+| 3          | Supplier C   | 20     |
+| 4          | Supplier D   | 10     |
+| 5          | Supplier E   | 30     |
+
+- `COUNT(Status)` would return 3 because there are 3 non-null values in the `Status` column (10, 20, and 30).
+- `COUNT(*)` would return 5 because there are 5 rows in the table, regardless of whether the `Status` column is NULL or not.
